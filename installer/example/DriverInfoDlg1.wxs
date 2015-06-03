@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <Property Id="HEARTBEAT" Value="30" />
+    
+    
+    <UI>
+      <Dialog Id="DriverInfoDlg1" Width="370" Height="270" Title="[ProductName] DriverInfo1" NoMinimize="yes">
+
+        <Control Id="DriverIdLabel" Type="Text" X="45" Y="45" Width="50" Height="18" TabSkip="no" Text="&amp;DriverId:" />
+        <Control Id="DriverIdEdit" Type="Edit" X="105" Y="42" Width="80" Height="18" Property="DRIVERID" Text="{4}" />
+
+        <!--
+        <Control Id="DriverIdLabel" Type="Text" X="45" Y="43" Width="100" Height="15" TabSkip="no" Text="&amp;DriverId:" />
+        <Control Id="DriverIdList" Type="ComboBox" X="45" Y="55" Width="220" Height="16" Property="DriverId">
+          <ComboBox Property="DriverId">
+            <ListItem Text="[DriverId]" Value="1" />
+            <ListItem Text="[DriverId]" Value="2" />
+            </ComboBox>
+        </Control>
+        -->
+
+        <Control Id="MidWareIpLabel" Type="Text" X="45" Y="65" Width="50" Height="18" TabSkip="no" Text="&amp;MidWareIp:" />
+        <Control Id="MidWareIpEdit" Type="Edit" X="105" Y="62" Width="80" Height="18" Property="MIDWAREIP" Text="{15}" />
+
+        <Control Id="HeartbeatIntervalLabel" Type="Text" X="45" Y="85" Width="50" Height="18" TabSkip="no" Text="&amp;Heartbeat:"/>
+        <Control Id="HeartbeatIntervalEdit" Type="Edit" X="105" Y="82" Width="80" Height="18" Property="HEARTBEAT" Text="{3}" />
+        <Control Id="SecondslLabel" Type="Text" X="200" Y="85" Width="50" Height="18" TabSkip="no" Text="&amp;seconds"/>
+
+        <Control Id="Interception" Type="CheckBox" X="45" Y="105" Width="200" Height="17" Property="INTERCEPTIONFLAG" CheckBoxValue="1" Text="Intercept for SMTDriver." />
+
+        <Control Id="DataSync" Type="CheckBox" X="45" Y="125" Width="200" Height="17" CheckBoxValue="1" Property="DATASYNCFLAG" Text="Data sync for SMTDriver." />
+
+        <Control Id="CaptureSql" Type="CheckBox" X="45" Y="145" Width="200" Height="17" CheckBoxValue="1" Property="CAPTURESQLFLAG" Text="Capture SQL for SMTDriver." />
+
+        <Control Id="CaptureResult" Type="CheckBox" X="45" Y="165" Width="200" Height="17" CheckBoxValue="1" Property="CAPTURERESULTFLAG" Text="Capture Result for SMTDriver." />
+
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+          <Publish Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
+          <Publish Event="NewDialog" Value="DriverInfoDlg2">1</Publish> <!--  -->
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+
+      </Dialog>
+    </UI>
+
+
+    <!--
+    <CustomAction Id="SETBOOLENABLEEXTERNALREPORT_FALSE" Property="BOOL_ENABLEEXTERNALREPORT" Value="false"></CustomAction>
+    <CustomAction Id="SETBOOLENABLEEXTERNALREPORT_TRUE" Property="BOOL_ENABLEEXTERNALREPORT" Value="true"></CustomAction>
+    -->
+
+    <!--
+    <Binary Id="myAction" SourceFile="..\CustomAction1\bin\Debug\CustomAction1.CA.dll" />
+        <CustomAction Id="myActionId" BinaryKey="myAction" DllEntry="CustomAction1" />
+    <InstallExecuteSequence>
+      <Custom Action="myActionId" Before="InstallFinalize" />
+    -->
+
+  </Fragment>
+
+
+</Wix>

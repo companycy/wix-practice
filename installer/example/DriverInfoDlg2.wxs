@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <Property Id="DRIVERTYPE" Secure="yes" Value="JDBC" />
+
+    <UI>
+      <Dialog Id="DriverInfoDlg2" Width="370" Height="270" Title="[ProductName] DriverInfo2" NoMinimize="yes">
+
+        <!--<Control Id="JDBC" Type="CheckBox" X="45" Y="45" Width="290" Height="17" Property="JDBCFLAG" CheckBoxValue="1" Text="JDBC." />
+        <Control Id="JDBCLabel" Type="Text" X="45" Y="65" Width="50" Height="10" TabSkip="no" Text="&amp;JDBC:"/>
+        <Control Id="JDBCEdit" Type="Edit" X="45" Y="80" Width="220" Height="18" Property="JDBC" Text="{3}" >
+          <Condition Action="enable" >JDBCFLAG=1</Condition>
+          <Condition Action="disable"><![CDATA[JDBCFLAG <>1]]></Condition>
+        </Control>-->
+        
+        <Control Id="DriverTypeLabel" Type="Text" X="45" Y="45" Width="100" Height="15" TabSkip="no" Text="&amp;DriverType:" />
+        <Control Id="DriverIdList" Type="ComboBox" X="45" Y="60" Width="220" Height="16" Property="DRIVERTYPE">
+          <ComboBox Property="DRIVERTYPE">
+            <ListItem Value="JDBC" />
+            <ListItem Value="ODBC" />
+            <ListItem Value="OCI" />
+            <ListItem Value="ProC" />
+            </ComboBox>
+        </Control>
+        
+        <!--<Control Id="MyRadioButton" Type="RadioButtonGroup" X="45" Y="105" Width="10" Height="15" Property="INSTALLTYPE">
+          <RadioButtonGroup Property="INSTALLTYPE">
+            <RadioButton Value="USE_A" Text="Save text field 1" X="45" Y="125" Width="10" Height="15" />
+            <RadioButton Value="USE_B" Text="Save text field 2" X="45" Y="145" Width="10" Height="15" />
+          </RadioButtonGroup>
+        </Control>-->
+        
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+          <Publish Event="NewDialog" Value="DriverInfoDlg1">1</Publish>
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
+          <Publish Event="NewDialog" Value="SetupTypeDlg">1</Publish> <!--  -->
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+
+      </Dialog>
+    </UI>
+
+    <Binary Id="myAction2" SourceFile="..\CustomAction2\bin\Debug\CustomAction2.CA.dll"/>
+    <CustomAction Id="SetCustomActionDataValue2" Return="check" Property="ReadAndSet2" Execute="immediate"
+                  Value="APPFOLDER=[APPFOLDER];DRIVERTYPE=[DRIVERTYPE]" />
+    <CustomAction Id="ReadAndSet2"
+                BinaryKey="myAction2"
+                DllEntry="SaveDriverType"
+                Execute="deferred"
+                HideTarget="no"
+                Return="check" />
+
+    <InstallExecuteSequence>
+      <Custom Action="SetCustomActionDataValue2" Before="ReadAndSet2" />
+      <Custom Action="ReadAndSet2" Before="InstallFinalize" >NOT Installed</Custom>
+    </InstallExecuteSequence>
+    
+    <!--<CustomAction Id="RecordDriverInfo" BinaryKey="myActionId2" DllEntry="SaveDriverType"  />
+    <InstallExecuteSequence>
+      <Custom Action="RecordDriverInfo" Before="InstallFinalize" />
+    </InstallExecuteSequence>-->
+    
+
+  </Fragment>
+
+
+</Wix>

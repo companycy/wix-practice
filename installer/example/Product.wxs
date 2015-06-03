@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="SMTDriver" Language="1033" Version="1.0.0.0" Manufacturer="Microsoft" UpgradeCode="bf649aa2-df74-473a-9040-cc4065e9156e">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate />
+
+    <!--
+    <Feature Id="ProductFeature" Title="SMTDriver" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcuts"/>
+      <ComponentRef Id="TextFileComponent" />
+    </Feature>
+    -->
+
+    <Feature Id="MainTree" Title="SMT Driver" Level="1">
+      <Feature Id="Shortcuts" Title="Shortcuts" Absent="allow" Description="Installs Shortcut" Level="1">
+        <ComponentRef Id="ApplicationShortcuts" />
+      </Feature>
+
+      <!--
+      <Feature Id="Shortcuts2" Title="Shortcuts2" Description="Installs Shortcuts2" Level="1">
+        <ComponentRef Id="DesktopShortcut" />
+      </Feature>
+      -->
+
+      <!--
+      <Feature Id="DesktopShortcutFeature" Title="DesktopShortcut" Level="1">
+      <ComponentRef Id="DesktopShortcutComponent" />
+      </Feature>
+       -->
+
+      <Feature Id="JDBC" Title="JDBC" Absent="allow" Description="Installs JDBC" Level="1">
+        <ComponentRef Id="JDBC" />
+      </Feature>
+      <Feature Id="ODBCFeature" Title="ODBC" Description="Installs ODBC.txt" Level="1">
+        <ComponentRef Id="ODBC" />
+      </Feature>
+      <Feature Id="OracleFeature" Title="Oracle" Description="Installs Oracle.txt" Level="1">
+        <ComponentRef Id="Oracle" />
+      </Feature>
+
+    </Feature>
+
+
+    <UI Id="MyWixUI_Mondo">
+      <UIRef Id="WixUI_Mondo" />
+      <UIRef Id="WixUI_ErrorProgressText" />
+
+      <!-- 
+            <DialogRef Id="UserRegistrationDlg" />
+            <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="UserRegistrationDlg" Order="3">LicenseAccepted = "1"</Publish>
+            <Publish Dialog="FeaturesDlg" Control="Back" Event="NewDialog" Value="UserRegistrationDlg">1</Publish>
+      -->
+
+      <DialogRef Id="DriverInfoDlg1" />
+      <DialogRef Id="DriverInfoDlg2" />
+      <DialogRef Id="DriverInfoDlg3" />
+
+      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="DriverInfoDlg1" Order="3">LicenseAccepted = "1"</Publish>
+      <Publish Dialog="SetupTypeDlg" Control="Back" Event="NewDialog" Value="DriverInfoDlg2">1</Publish>
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+
+    </UI>
+
+    <Property Id="PIDTemplate"><![CDATA[123456<### ###>@@@@@]]></Property>
+    <Property Id="INSTALLDESKTOPSHORTCUT" Value="1" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch My Application Name" />
+    <Property Id="WixShellExecTarget" Value="[#myapplication.exe]" />
+    
+    
+    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+
+    <!--
+    <Binary Id="myAction" SourceFile="..\CustomAction1\bin\Debug\CustomAction1.CA.dll" />
+    <CustomAction Id="myActionId" BinaryKey="myAction" DllEntry="CustomAction1" />
+    -->
+
+    <!--
+    <Binary Id="myAction1" SourceFile="..\CustomAction1\bin\Debug\CustomAction1.CA.dll"/>
+    <CustomAction Id="myActionId" BinaryKey="myAction1" DllEntry="CustomAction1" />
+    <InstallExecuteSequence>
+      <Custom Action="myActionId" After="InstallFiles"  />
+    </InstallExecuteSequence>
+    -->
+
+    <Binary Id="myAction1" SourceFile="..\CustomAction1\bin\Debug\CustomAction1.CA.dll"/>
+    <CustomAction Id="SetCustomActionDataValue1" Return="check" Property="ReadAndSet" Execute="immediate"
+                  Value="driverID=[DRIVERID];midWare=[MIDWAREIP];heartbeat=[HEARTBEAT];isInterception=[INTERCEPTIONFLAG];isDataSync=[DATASYNCFLAG];isCaptureSql=[CAPTURERESULTFLAG];isCaptureResult=[CAPTURESQLFLAG];JDBCFolder=[JDBCFolder];APPFOLDER=[APPFOLDER];" />
+    <CustomAction Id="ReadAndSet"
+                BinaryKey="myAction1"
+                DllEntry="CustomAction1"
+                Execute="deferred"
+                HideTarget="no"
+                Return="check" />
+
+    <InstallExecuteSequence>
+      <Custom Action="SetCustomActionDataValue1" Before="ReadAndSet" />
+      <Custom Action="ReadAndSet" Before="InstallFinalize" >NOT Installed</Custom>
+    </InstallExecuteSequence>
+
+
+    <!--
+    JDBCFLAG=[JDBCFLAG];
+    <InstallExecuteSequence>
+      <Custom Action="myActionId1" Before="InstallFinalize">NOT Installed</Custom>
+    </InstallExecuteSequence>
+    -->
+
+    <InstallExecuteSequence>
+
+      <!--
+      <Custom Action="myActionId" Before="InstallFinalize" />
+      -->
+
+      <!-- call the custom actions to set BOOL_ENABLEEXTERNALREPORT based on whether the "ENABLEEXTERNALREPORT" is empty - not ticked, or 1 - ticked
+      <Custom Action="SETBOOLENABLEEXTERNALREPORT_FALSE" After="CostFinalize">NOT ENABLEEXTERNALREPORT</Custom>
+      <Custom Action="SETBOOLENABLEEXTERNALREPORT_TRUE" After="SETBOOLENABLEEXTERNALREPORT_FALSE">ENABLEEXTERNALREPORT="1"</Custom>
+      -->
+
+    </InstallExecuteSequence>
+
+  </Product>
+  <Fragment>
+    <!--<Property Id="ApplicationFolderName" Value="SMTDriver" />-->
+    <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+    <WixVariable Id="WixUISupportPerUser" Value="0" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="APPFOLDER" Name="SMTDriver">
+          <!-- <Directory Id="INSTALLFOLDER" Name="MyAppDir"> -->
+          <Directory Id="JDBCFolder" Name="JDBC">
+            <Component Id="JDBC" Guid="{4E26479B-81FF-43B8-ADC7-5A18BCCBC7A1}" DiskId="1">
+              <File Id="Jar" Name="smt-driver5-1.0.jar" Vital="yes" Source="smt-driver5-1.0.jar" />
+              <!--<File Id="JDBC.txt" Name="JDBC.txt" Vital="yes" Source="JDBC.txt" />-->
+            </Component>
+          </Directory>
+          <Directory Id="ODBCFolder" Name="ODBC">
+            <Component Id="ODBC" Guid="{AC75B8DB-47D1-4D63-848F-DA13845804F3}" DiskId="1">
+              <File Id="ODBC.txt" Name="ODBC.txt" Vital="yes" Source="ODBC.txt" />
+            </Component>
+          </Directory>
+          <Directory Id="OracleFolder" Name="Oracle">
+            <Component Id="Oracle" Guid="{4CB8DB95-2CA2-4B93-8F08-994113FBD627}" DiskId="1">
+              <File Id="Oracle.txt" Name="Oracle.txt" Vital="yes" Source="Oracle.txt" />
+            </Component>
+          </Directory>
+          <!-- </Directory> -->
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ProgramMenuSubfolder" Name="SMTDriver">
+          <Component Id="ApplicationShortcuts" Guid="12345678-1234-1234-1234-333333333333">
+            <Shortcut Id="ApplicationShortcut1" Name="SMTDriver Shortcut Name" Description="SMTDriver Product Name" Target="[INSTALLDIR]SMTDriver.exe" WorkingDirectory="INSTALLDIR" />
+            <RegistryValue Root="HKCU" Key="Software\SMTDriver Company Name\SMTDriver Product Name" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+            <RemoveFolder Id="ProgramMenuSubfolder" On="uninstall" />
+
+            <Shortcut Id="UninstallSMTDriver" Name="Uninstall" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Description="Uninstall SMTDriver" />
+
+          </Component>
+        </Directory>
+      </Directory>
+
+      <!--
+      <Directory Id="DesktopFolder" Name="Desktop">
+        <Component Id="DesktopShortcut" Guid="{1A558528-B75D-4558-9CE7-B61C950EBD88}">
+          <Condition>INSTALLDESKTOPSHORTCUT</Condition>
+          <RegistryKey Root="HKCU" Key="YourAppKey\PossibleSubKey" Action="createAndRemoveOnUninstall">
+            <RegistryValue Name="AnyValueName" Value="1" Type="integer" KeyPath="yes"/>
+          </RegistryKey>
+
+              <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="ShortcutName" ShortName="ShrtName" Icon="YourApp.exe" Target="[#YourAppExeId]"/>
+              
+        </Component>
+      </Directory>
+      -->
+
+    </Directory>
+    <!--
+    <Directory Id="TARGETDIR" Name="SourceDir">
+
+      <Directory Id="ProgramFilesFolder" Name='PFiles'>
+        <Directory Id="INSTALLFOLDER" > 
+          <Directory Id="SimpleInstallerFolder" Name="SimpleInstaller" >
+            <Component Id="TextFileComponent" Guid="*">
+              <File Id="TextFile" Name="TextFile.txt" DiskId="1" Source="TextFile.txt" KeyPath="yes" />
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ProgramMenuSubfolder" Name="SMTDriver">
+          <Component Id="ApplicationShortcuts" Guid="12345678-1234-1234-1234-333333333333">
+            <Shortcut Id="ApplicationShortcut1" Name="SMTDriver Shortcut Name" Description="SMTDriver Product Name"
+                      Target="[INSTALLDIR]SMTDriver.exe" WorkingDirectory="INSTALLDIR"/>
+            <RegistryValue Root="HKCU" Key="Software\SMTDriver Company Name\SMTDriver Product Name"
+                      Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            <RemoveFolder Id="ProgramMenuSubfolder" On="uninstall"/>
+          </Component>
+        </Directory>
+      </Directory>
+
+    </Directory>
+    -->
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+      <!-- <Component Id="ProductComponent"> -->
+      <!-- TODO: Insert files, registry keys, and other resources here. -->
+      <!-- </Component> -->
+    </ComponentGroup>
+  </Fragment>
+</Wix>

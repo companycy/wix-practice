@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <UI>
+      <Dialog Id="DriverInfoDlg3" Width="370" Height="270" Title="[ProductName] DriverId" NoMinimize="yes">
+
+        <Control Type="Edit" Width="87" Height="15" X="255" Y="60" Id="UserEditBox" Property="USEREDITBOXVALUE" >
+          <Condition Action="enable" >USEINTEGRATEDSECURITY = 1</Condition>
+          <Condition Action="disable"><![CDATA[USEINTEGRATEDSECURITY <>1]]></Condition>
+        </Control>
+
+        <Control Type="Edit" Width="87" Height="15" X="255" Y="60" Id="PasswordEditBox" Property="PASSWORDTEXTBOXVALUE" >
+          <Condition Action="enable" >USEINTEGRATEDSECURITY = 1</Condition>
+          <Condition Action="disable"><![CDATA[USEINTEGRATEDSECURITY <>1]]></Condition>
+        </Control>
+
+        <Control Id="IntegratedSecurityCheckBox" Type="CheckBox" Text="Use Integrated Security" Property="USEINTEGRATEDSECURITY" Width="200" Height="15" X="26" Y="241" CheckBoxValue="1"/>
+
+      </Dialog>
+    </UI>
+
+    <!--
+    <Binary Id="myActionId3" SourceFile="..\CustomAction2\bin\Debug\CustomAction2.CA.dll"/>
+    <CustomAction Id="RecordDriverInfo" BinaryKey="myActionId2" DllEntry="SaveUserInfo"  />
+    <InstallExecuteSequence>
+      <Custom Action="RegCustomAction" Before="InstallFinalize" />
+    </InstallExecuteSequence>
+    -->
+
+  </Fragment>
+
+
+</Wix>

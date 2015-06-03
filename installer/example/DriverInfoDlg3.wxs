@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <UI>
+      <Dialog Id="DriverInfoDlg3" Width="370" Height="270" Title="[ProductName] DriverInfo2" NoMinimize="yes">
+
+        <Control Id="ODBC" Type="CheckBox" X="45" Y="45" Width="290" Height="17" Property="ODBCFLAG" CheckBoxValue="1" Text="ODBC." />
+        <Control Id="ODBCLabel" Type="Text" X="45" Y="65" Width="50" Height="10" TabSkip="no" Text="&amp;ODBC:"/>
+        <Control Id="ODBCEdit" Type="Edit" X="45" Y="80" Width="220" Height="18" Property="ODBC" Text="{3}" >
+          <Condition Action="enable" >ODBCFLAG=1</Condition>
+          <Condition Action="disable"><![CDATA[ODBCFLAG <>1]]></Condition>
+        </Control>
+
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+          <Publish Event="NewDialog" Value="DriverInfoDlg2">1</Publish>
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
+          <Publish Event="NewDialog" Value="SetupTypeDlg">1</Publish> <!--  -->
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+
+      </Dialog>
+    </UI>
+
+    <!--
+    <Binary Id="myActionId3" SourceFile="..\CustomAction2\bin\Debug\CustomAction2.CA.dll"/>
+    <CustomAction Id="RecordDriverInfo" BinaryKey="myActionId2" DllEntry="SaveUserInfo"  />
+    <InstallExecuteSequence>
+      <Custom Action="RegCustomAction" Before="InstallFinalize" />
+    </InstallExecuteSequence>
+    -->
+
+  </Fragment>
+
+
+</Wix>
